@@ -668,7 +668,7 @@ class WDSecurityWindow:
             if not unlock_ok:
                 hint = ''
                 if 'Illegal Request' in last_detail:
-                    hint = ' The selected device endpoint rejected the vendor command; this is usually an interface mismatch or unsupported firmware path.'
+                    hint = ' The device rejected the vendor command. This can indicate endpoint/interface mismatch, unsupported model/firmware behavior, or password/key mismatch for this command path.'
                 detail_msg = (' Details: ' + last_detail) if last_detail else ''
                 self.show_error('Unlock Failed', 'SCSI decrypt command failed. Check password and connections.' + hint + detail_msg)
                 return
