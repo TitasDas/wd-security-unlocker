@@ -55,18 +55,24 @@ class WDSecurityWindow:
         frame.setFrameShape(QFrame.StyledPanel)
         frame.setFrameShadow(QFrame.Raised)
         frame.setStyleSheet('''
-            QFrame#rootFrame { background-color: palette(window); }
+            QFrame#rootFrame {
+                background-color: #eef2f6;
+            }
             QFrame#headerCard {
                 border-radius: 12px;
-                background: palette(dark);
+                background: qlineargradient(
+                    x1: 0, y1: 0, x2: 1, y2: 1,
+                    stop: 0 #0f2a44,
+                    stop: 1 #0b1f33
+                );
             }
             QLabel#titleLabel {
-                color: palette(bright-text);
+                color: #ffffff;
                 font-size: 28px;
                 font-weight: 700;
             }
             QLabel#subtitleLabel {
-                color: palette(light);
+                color: #c9d7ea;
                 font-size: 13px;
             }
             QLabel#chipLabel,
@@ -75,30 +81,35 @@ class WDSecurityWindow:
                 padding: 4px 10px;
                 font-size: 11px;
                 font-weight: 700;
-                border: 1px solid palette(mid);
-                background: palette(base);
-                color: palette(text);
+                border: 1px solid #c2d5f0;
+                background: #e2ecf9;
+                color: #153a63;
             }
             QFrame#panelCard {
-                border: 1px solid palette(midlight);
+                border: 1px solid #dce3ec;
                 border-radius: 10px;
-                background: palette(base);
+                background: #ffffff;
             }
             QLabel#sectionTitle {
+                color: #102d4d;
                 font-size: 14px;
                 font-weight: 700;
             }
             QLabel#fieldLabel {
+                color: #26435f;
                 font-size: 12px;
                 font-weight: 600;
             }
             QLineEdit {
-                border: 1px solid palette(mid);
+                border: 1px solid #b8c6d8;
                 border-radius: 8px;
                 padding: 8px 10px;
+                background: #ffffff;
+                color: #20374f;
             }
             QLineEdit:focus {
-                border: 1px solid palette(highlight);
+                border: 1px solid #2e5e92;
+                background: #fafcff;
             }
             QPushButton {
                 border-radius: 8px;
@@ -106,13 +117,17 @@ class WDSecurityWindow:
                 font-weight: 600;
             }
             QPushButton#primaryBtn {
-                background: palette(highlight);
-                color: palette(highlighted-text);
+                background: #1f4f82;
+                color: #ffffff;
             }
+            QPushButton#primaryBtn:hover { background: #1b456f; }
+            QPushButton#primaryBtn:pressed { background: #173a5d; }
             QTextEdit {
-                border: 1px solid palette(midlight);
+                border: 1px solid #d5dee8;
                 border-radius: 8px;
                 padding: 8px;
+                background: #fcfdfe;
+                color: #20374f;
             }
         ''')
 
