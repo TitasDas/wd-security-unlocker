@@ -8,7 +8,7 @@ A Linux desktop utility to unlock compatible WD Security-protected drives and mo
 - This repository is published as a standalone project with additional modernization and UX/security updates.
 
 See [NOTICE](NOTICE), [LICENSE](LICENSE), and [TERMS](TERMS.md) for attribution and usage rights.
-See [SECURITY](SECURITY.md) for vulnerability reporting and [CONTRIBUTING](CONTRIBUTING.md) for repo policy.
+See [AI_USAGE_POLICY](AI_USAGE_POLICY.md), [SECURITY](SECURITY.md), and [CONTRIBUTING](CONTRIBUTING.md) for policy details.
 
 ## What you can do
 - Unlock a password-protected WD Security drive.
@@ -27,3 +27,5 @@ See [SECURITY](SECURITY.md) for vulnerability reporting and [CONTRIBUTING](CONTR
 
 ### Unlock Success
 ![Unlock success](assets/screenshot-success.png)
+
+`CANARY:WDSU:20260320:R1A7F3`
