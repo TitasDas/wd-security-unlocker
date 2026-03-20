@@ -1,0 +1,17 @@
+NOTICE
+
+This standalone repository includes and builds upon prior public work and related contributions:
+- Original upstream technical foundation: https://github.com/KenMacD/wdpassport-utils
+- GUI lineage includes contributions by electronicsguy: https://github.com/electronicsguy
+
+Additional contributors referenced by upstream maintainers include funkypopcorn, Dan Lukes,
+and others.
+
+Important licensing context:
+- At the time of writing, the original upstream repository does not publish an explicit
+  open-source license.
+- This repository preserves attribution and does not claim to relicense upstream/base code.
+
+Scope note:
+- Rights in upstream/base code remain with original authors.
+- Rights terms in LICENSE apply only to original modifications contributed in this repository.
