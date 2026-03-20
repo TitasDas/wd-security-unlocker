@@ -417,14 +417,8 @@ class WDSecurityWindow:
         for line in wd_usb_lines:
             self.append_log('Western Digital drive found at: ' + line)
 
-        lsblk_out, _, _ = run_cmd(['lsblk'])
-        if 'wd unlocker' not in lsblk_out.lower():
-            self.set_state('CHECK')
-            self.append_log('Drive may already be unlocked or not WD Security compatible.')
-            self.append_log('Reconnect the disk and try again if needed.')
-            self.pw_box.setEnabled(False)
-            return
-
+        # Continue with direct device checks instead of relying on lsblk label text,
+        # which can vary across models and desktop environments.
         self.set_state('READY')
         self.append_log('Checking drive lock status...')
         self.check_unlock_status()
@@ -438,11 +432,12 @@ class WDSecurityWindow:
         elif num_lines == 1:
             self.append_log('Drive appears to be locked.')
         else:
-            self.set_state('MOUNT')
-            self.append_log('Drive appears to be already unlocked.')
+            self.set_state('WARN')
             self.pw_box.setEnabled(False)
-            self.append_log('Drive device name: ' + PARTNAME)
-            self.check_mount_status()
+            self.decrypt_btn.setEnabled(False)
+            self.mount_btn.setEnabled(False)
+            self.append_log('Multiple WD block devices detected. Keep only one target WD drive connected.')
+            self.append_log('Drive selection is ambiguous; reconnect and retry.')
 
     def get_partname(self):
         global PARTNAME
@@ -454,7 +449,7 @@ class WDSecurityWindow:
 
         partnames = []
         for entry in os.listdir(disk_by_id):
-            if 'usb-WD' not in entry:
+            if 'usb-wd' not in entry.lower():
                 continue
             full = os.path.join(disk_by_id, entry)
             if not os.path.islink(full):
@@ -474,11 +469,25 @@ class WDSecurityWindow:
     def check_mount_status(self):
         self.mount_btn.setEnabled(True)
 
+    def resolve_mount_device(self, partname):
+        """Return a mountable block device for a detected WD disk."""
+        base_device = '/dev/' + partname
+        out, _, rc = run_cmd(['lsblk', '-ln', '-o', 'NAME,TYPE', base_device])
+        if rc == 0:
+            for line in out.splitlines():
+                fields = line.split()
+                if len(fields) != 2:
+                    continue
+                name, dev_type = fields
+                if dev_type == 'part':
+                    return '/dev/' + name
+        return base_device
+
     def decrypt_wd(self):
         self.call_cooking_pw()
 
     def create_password_blob(self, password):
-        fd, path = tempfile.mkstemp(prefix='wdpass_', dir=SCRIPT_DIR)
+        fd, path = tempfile.mkstemp(prefix='wdpass_')
         os.close(fd)
         os.chmod(path, 0o600)
 
@@ -622,7 +631,7 @@ class WDSecurityWindow:
         run_cmd(['partprobe'])
         self.append_log('Available devices have been updated.')
 
-        devname = '/dev/' + PARTNAME + '1'
+        devname = self.resolve_mount_device(PARTNAME)
         self.append_log('Mounting device: ' + devname)
 
         # If already mounted, avoid re-mount attempts.
@@ -676,7 +685,7 @@ def prompt_sudo():
 
 
 def check_required_utils():
-    required_bins = ['sg_raw', 'partprobe', 'lsusb', 'lsblk', 'udisksctl']
+    required_bins = ['sg_raw', 'partprobe', 'lsusb', 'lsblk', 'findmnt', 'mount']
     missing = [binary for binary in required_bins if not is_executable_available(binary)]
     if missing:
         print(f"Missing required system tools: {', '.join(missing)}")
