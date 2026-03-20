@@ -1,7 +1,5 @@
 # What You Should Have Picked Up From Linux
 
-This is the distilled Linux learning from this project.
-
 ## 1) Linux exposes hardware through multiple interfaces
 - One physical drive can appear as `/dev/sdX` and `/dev/sgX`.
 - They are different interfaces, not duplicates.
