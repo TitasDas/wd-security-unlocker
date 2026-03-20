@@ -1,95 +1,74 @@
-# Linux Hardware Tooling: Practical Learning Notes
+# What You Should Have Picked Up From Linux
 
-This note captures what we learned while building and debugging the WD unlock utility on Linux.
+This is the distilled Linux learning from this project.
 
-## 1) Know Your Device Nodes
-- `/dev/sdX` is the block disk view.
-- `/dev/sgX` is the SCSI generic command path.
-- Vendor commands may work on one node and fail on another.
-- Always log exactly which node you sent commands to.
+## 1) Linux exposes hardware through multiple interfaces
+- One physical drive can appear as `/dev/sdX` and `/dev/sgX`.
+- They are different interfaces, not duplicates.
+- A command may fail on one and work on the other.
 
-## 2) Prefer Live Kernel State Over Logs
-- `dmesg` is history, not current truth.
-- For live detection, use `sysfs` and `udev` first.
-- Example: `/sys/class/scsi_generic/*/device/type` for SCSI type.
-- This avoids stale or wrong candidates.
+## 2) Live system state beats logs
+- `dmesg` is historical context, not a current source of truth.
+- For runtime decisions, prefer `sysfs` and `udev`.
+- Rule: detect from live files in `/sys`, not old kernel messages.
 
-## 3) Use Udev for Stable Identity
-- `udevadm info --query=property --name /dev/...` gives stable metadata.
-- `ID_PATH` is useful to match the disk and SG endpoint on the same USB path.
-- Match by path before trying unlock commands.
-- Path matching reduces wrong-endpoint failures.
+## 3) Device identity must be explicit
+- Use udev properties (`ID_PATH`, model/product IDs) to map the right endpoint.
+- "Looks similar" is not enough when multiple USB devices exist.
+- If ambiguous, stop and warn instead of guessing.
 
-## 4) Read SCSI Errors Correctly
-- `Check Condition` means command-level failure from device firmware.
-- `Illegal Request` means endpoint/command rejection.
-- This is often not a GUI bug.
-- Common causes: interface mismatch, unsupported firmware path, password/key mismatch for that command path.
+## 4) SCSI errors are protocol-level signals
+- `Check Condition` and `Illegal Request` come from device firmware.
+- That usually means command-path mismatch, unsupported behavior, or key/password mismatch.
+- It is often not a UI bug.
 
-## 5) Handle Multiple Devices Safely
-- Multiple similar devices create ambiguity fast.
-- If selection is ambiguous, stop and warn instead of guessing.
-- Disable risky actions until one clear target remains.
-- Safety beats convenience for disk/security tooling.
+## 5) Root context changes behavior
+- Storage unlock/mount operations often require elevated privileges.
+- Root-run GUI in user sessions can produce environment warnings.
+- Warnings are not always fatal, but they matter for reliability and UX.
 
-## 6) Build Candidate Lists in Layers
-- First try strongest match (same USB path + expected SCSI type).
-- Then try mapped fallback candidates.
-- Then controlled last-resort fallbacks.
-- Log candidate order so failures are diagnosable.
+## 6) Mount success needs verification
+- “Mounted” is not enough.
+- Verify actual target path with `findmnt` and filesystem checks.
+- Recover from invalid automount targets by remounting to a known safe path.
 
-## 7) Mounting on Linux Needs Validation
-- “Mounted” does not always mean usable from desktop.
-- Validate with `findmnt` and check target path exists as a directory.
-- Recover from broken automount paths by remounting to a safe known path.
-- Keep mount behavior deterministic.
+## 7) Good Linux tools are observable
+- Log candidate selection, command path, and exact failure reason.
+- Generic “failed” messages slow debugging.
+- Good logs turn support into engineering.
 
-## 8) Root + Desktop Context Has Tradeoffs
-- Disk unlock/mount generally needs root privileges.
-- GUI via `pkexec`/`sudo` can show runtime warnings.
-- Not all warnings are fatal, but they matter for UX.
-- Keep launcher logs and visible error messages.
+## 8) Test strategy for system tools
+- Unit-test deterministic logic (detection, mapping, state transitions).
+- Simulate command outputs for failure/success paths.
+- Keep real hardware tests as a separate final validation step.
 
-## 9) Make Errors Actionable
-- Avoid generic “failed” popups only.
-- Include endpoint, command path, and key SCSI detail in logs.
-- Keep user-facing hints technically accurate.
-- Good diagnostics reduce support time dramatically.
+## 9) Maintainability is part of Linux engineering
+- Keep clear repo boundaries: `app/`, `scripts/`, `docs/`, `tests/`.
+- Keep command entrypoints stable when refactoring.
+- Standardized issue templates improve triage quality.
 
-## 10) Test What You Can, Simulate What You Can’t
-- Unit-test deterministic logic: detection, mapping, state handling.
-- Add simulated end-to-end flows with mocks for command outputs.
-- Use smoke tests for UI initialization and flow wiring.
-- Real hardware unlock still needs on-device verification.
+## 10) Privacy hygiene matters in OSS
+- Don’t commit local logs.
+- Don’t leak personal paths/serials in fixtures or docs.
+- Ask users to redact sensitive fields in reports.
 
-## 11) Organize Repo for Long-Term Maintainability
-- Keep code in `app/`, scripts in `scripts/`, docs in `docs/`, tests in `tests/`.
-- Keep backward-compatible wrappers when restructuring paths.
-- Add issue templates for standardized diagnostics.
-- Clear structure improves contributions and debugging speed.
+## Linux References
+- Kernel SCSI docs: https://docs.kernel.org/scsi/
+- Sysfs overview: https://docs.kernel.org/filesystems/sysfs.html
+- udev man page: `man 7 udev`
+- udevadm man page: `man 8 udevadm`
+- lsblk man page: `man 8 lsblk`
+- findmnt man page: `man 8 findmnt`
+- mount man page: `man 8 mount`
+- sg_raw man page: `man 8 sg_raw`
 
-## 12) Privacy and OSS Hygiene
-- Never commit local launcher logs.
-- Remove personal-looking paths from fixtures and screenshots.
-- Ask users to redact serials and personal mount paths in reports.
-- Document exactly what to share for compatibility reports.
+## Linux Desktop/UI Design References
+- GNOME Human Interface Guidelines: https://developer.gnome.org/hig/
+- KDE Human Interface Guidelines: https://develop.kde.org/hig/
+- freedesktop Desktop Entry Spec: https://specifications.freedesktop.org/desktop-entry-spec/latest/
+- freedesktop Icon Theme Spec: https://specifications.freedesktop.org/icon-theme-spec/latest/
 
-## Quick Command Set (Daily Use)
-```bash
-# Run app launcher
-./scripts/wd-security-launcher.sh
-
-# Build binary
-./scripts/build-linux.sh
-
-# Install desktop entry
-./scripts/install-desktop-entry.sh
-
-# Run tests
-python3 -m unittest -v tests/test_core_logic.py tests/test_user_flows.py
-```
-
-## Core Mindset
-- Treat Linux hardware tooling as systems engineering, not just app UI work.
-- Trust live device state, not assumptions.
-- Prioritize safe defaults, observability, and reproducibility.
+## Practical Mindset
+- Treat Linux app + hardware work as systems engineering.
+- Prefer correctness and observability over clever shortcuts.
+- Build safe defaults first, then optimize UX.
