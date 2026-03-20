@@ -1,6 +1,6 @@
-# WD Security Unlocker
+# WD My Passport Linux Unlocker
 
-Linux desktop utility for unlocking compatible WD Security-protected drives and mounting them.
+Linux desktop utility for unlocking compatible WD My Passport and My Passport Ultra drives and mounting them.
 If you use WD My Passport drives on Linux and get stuck with a locked drive, this helps you unlock and mount it with a simple desktop app and CLI flow. It is aimed at Linux users who need practical access to their own WD-encrypted external drives.
 
 Legal: unofficial utility, no WD affiliation, authorized-use only. See [DISCLAIMER](docs/DISCLAIMER.md).
@@ -27,7 +27,7 @@ Legal: unofficial utility, no WD affiliation, authorized-use only. See [DISCLAIM
 1. Install Python 3 and PyQt5.
 2. Run `./scripts/build-linux.sh`.
 3. Run `./scripts/install-desktop-entry.sh`.
-4. Launch **WD Security Unlocker**.
+4. Launch **WD My Passport Linux Unlocker**.
 
 ## Credits
 - Original upstream: https://github.com/KenMacD/wdpassport-utils

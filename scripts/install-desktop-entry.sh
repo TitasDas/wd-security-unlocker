@@ -11,12 +11,13 @@ mkdir -p "$APPS_DIR"
 
 cat > "$DESKTOP_FILE" <<EOF
 [Desktop Entry]
-Name=WD Security Unlocker
-Comment=Unlock and mount WD Security drives
+Name=WD My Passport Linux Unlocker
+Comment=Unlock WD My Passport / Ultra drives on Linux
 Exec=$LAUNCHER
 Type=Application
 Terminal=false
 Categories=Utility;System;
+Keywords=WD;Western Digital;My Passport;My Passport Ultra;unlock;Linux;security;drive;
 StartupNotify=true
 EOF
 

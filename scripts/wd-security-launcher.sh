@@ -17,10 +17,10 @@ notify_error() {
   local msg="$1"
   echo "[$(ts)] ERROR: $msg" >> "$LOG_FILE"
   if command -v zenity >/dev/null 2>&1; then
-    zenity --error --title="WD Security Unlocker" --text="$msg" >/dev/null 2>&1 || true
+    zenity --error --title="WD My Passport Linux Unlocker" --text="$msg" >/dev/null 2>&1 || true
   fi
   if command -v notify-send >/dev/null 2>&1; then
-    notify-send "WD Security Unlocker" "$msg" >/dev/null 2>&1 || true
+    notify-send "WD My Passport Linux Unlocker" "$msg" >/dev/null 2>&1 || true
   fi
   echo "$msg"
 }

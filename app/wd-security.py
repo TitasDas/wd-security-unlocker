@@ -159,9 +159,9 @@ class WDSecurityWindow:
         header_layout.setContentsMargins(16, 14, 16, 14)
 
         title_group = QVBoxLayout()
-        self.title_label = QLabel('WD Security Unlocker')
+        self.title_label = QLabel('WD My Passport Linux Unlocker')
         self.title_label.setObjectName('titleLabel')
-        self.subtitle_label = QLabel('Unlock and mount compatible WD drives on Linux')
+        self.subtitle_label = QLabel('Unlock and mount WD My Passport / Ultra drives on Linux')
         self.subtitle_label.setObjectName('subtitleLabel')
         title_group.addWidget(self.title_label)
         title_group.addWidget(self.subtitle_label)
@@ -322,7 +322,7 @@ class WDSecurityWindow:
         self.check_wd_drive()
 
     def apply_texts(self, frame):
-        frame.setWindowTitle('WD Security for Linux')
+        frame.setWindowTitle('WD My Passport Linux Unlocker')
         self.decrypt_btn.setEnabled(False)
         self.apply_theme('light')
         self.set_state('READY')
