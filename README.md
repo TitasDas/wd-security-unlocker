@@ -7,7 +7,8 @@ A Linux desktop utility to unlock compatible WD Security-protected drives and mo
 - GUI lineage includes work by: https://github.com/electronicsguy
 - This repository is published as a standalone project with additional modernization and UX/security updates.
 
-See [NOTICE](NOTICE) and [LICENSE](LICENSE) for rights and attribution details.
+See [NOTICE](NOTICE), [LICENSE](LICENSE), and [TERMS](TERMS.md) for attribution and usage rights.
+See [SECURITY](SECURITY.md) for vulnerability reporting and [CONTRIBUTING](CONTRIBUTING.md) for repo policy.
 
 ## What you can do
 - Unlock a password-protected WD Security drive.
