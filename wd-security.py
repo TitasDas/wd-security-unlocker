@@ -624,8 +624,28 @@ class WDSecurityWindow:
 
         devname = '/dev/' + PARTNAME + '1'
         self.append_log('Mounting device: ' + devname)
-        _, _, mount_rc = run_cmd(['udisksctl', 'mount', '-b', devname])
 
+        # If already mounted, avoid re-mount attempts.
+        mounted_at, _, findmnt_rc = run_cmd(['findmnt', '-n', '-o', 'TARGET', '--source', devname])
+        if findmnt_rc == 0 and mounted_at.strip():
+            self.set_state('DONE')
+            self.append_log('Drive is already mounted at: ' + mounted_at.strip())
+            self.mount_btn.setEnabled(False)
+            return
+
+        # Primary path: direct mount to avoid desktop auto-open popups on some environments.
+        mount_dir = '/mnt/wd-security-' + PARTNAME
+        run_cmd(['mkdir', '-p', mount_dir])
+        _, _, direct_rc = run_cmd(['mount', devname, mount_dir])
+
+        if direct_rc == 0:
+            self.set_state('DONE')
+            self.append_log('WD hard drive decrypted and mounted successfully at: ' + mount_dir)
+            self.mount_btn.setEnabled(False)
+            return
+
+        # Fallback for environments where direct mount is restricted.
+        _, _, mount_rc = run_cmd(['udisksctl', 'mount', '-b', devname, '--no-user-interaction'])
         if mount_rc == 0:
             self.set_state('DONE')
             self.append_log('WD hard drive decrypted and mounted successfully!')
