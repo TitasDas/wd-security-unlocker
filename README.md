@@ -28,4 +28,3 @@ See [AI_USAGE_POLICY](AI_USAGE_POLICY.md), [SECURITY](SECURITY.md), and [CONTRIB
 ### Unlock Success
 ![Unlock success](assets/screenshot-success.png)
 
-`CANARY:WDSU:20260320:R1A7F3`
